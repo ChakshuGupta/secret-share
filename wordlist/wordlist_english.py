@@ -1,5 +1,5 @@
-WORDLISTS = dict()
-WORDLISTS["english"] = [
+ENGLISH_WORDLIST = list()
+ENGLISH_WORDLIST = [
 "abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse",
 "access","accident","account","accuse","achieve","acid","acoustic","acquire","across","act",
 "action","actor","actress","actual","adapt","add","addict","address","adjust","admit",
