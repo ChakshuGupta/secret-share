@@ -20,15 +20,15 @@ def generate_shares():
     """
     if not request.json:
         abort(400)
-    
-    mnemonics = request.json["mnemonics"]
+
+    # Request.json returns the value in unicode format. Convert to string
+    mnemonics = request.json["mnemonics"].encode("ascii")
     m = request.json["m"]
     n = request.json["n"]
-    mnemonic_words = mnemonics.split(" ")
-    split_shares(mnemonic_words, m, n)
+    shamir_shares = split_shares(mnemonics, m, n)
 
     print(mnemonics, m, n)
-    return request.json
+    return jsonify(shares=shamir_shares)
 
 @app.route('/')
 def index():

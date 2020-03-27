@@ -5,9 +5,10 @@ import struct
 from flask import abort
 
 from wordlist.wordlist_english import ENGLISH_WORDLIST
+# from secretsharing import SecretSharer
+from secretsharing import PlaintextToHexSecretSharer
 
-
-def split_shares(mnemonic_words, m, n):
+def split_shares(mnemonics, m, n):
     """
     Split BIP39 mnemonics into Shamir Shares
 
@@ -25,19 +26,12 @@ def split_shares(mnemonic_words, m, n):
     if n > 4095 :
         abort(400, {'message': "Must split to at most 4095 shares"})
 
-    if len(mnemonic_words) == 0 :
+    if len(mnemonics.split(" ")) == 0 :
         abort(400, {'message': "BIP39 Mnemonic words not provided!"})
 
-    bin_str = ""
-
-    for word in mnemonic_words:
-        word_index = ENGLISH_WORDLIST.index(word)
-        if word_index < 0 :
-            abort(400, {'message': 'Invalid word found in the list: '+ word})
-        
-        index_bits = struct.pack("i", word_index)
-        index_bits_padded = index_bits.ljust(11, "0")
-        bin_str += index_bits_padded
+    mnemonics = mnemonics.encode("ascii")
     
-    hex_str = binascii.hexlify(bin_str)
-    print(hex_str)
+    shamir_shares = PlaintextToHexSecretSharer.split_secret(mnemonics, m, n)
+    return shamir_shares
+
+
