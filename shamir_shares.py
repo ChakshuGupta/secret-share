@@ -46,10 +46,14 @@ def split_shares(mnemonics, m, n):
         mnemonic_words = list()
         share_index, share = share.split("-")
         
+        params_binary = params_to_bin_str(m, int(share_index))
+        print(params_binary)
+            
         share_binary = bin(int(share, 16))
         share_binary = share_binary.split("b")[1] # Binary string generated starts with - 0b
         # Every mnemonic has version as the first word.
         mnemonic_words.append(VERSION)
+        mnemonic_words.extend(bin_to_mnemonics(params_binary))
         mnemonic_words.extend(bin_to_mnemonics(share_binary))
 
         mnemonic_string = " ".join(mnemonic_words)
@@ -114,6 +118,7 @@ def bin_to_mnemonics(bin_str):
         word = ENGLISH_WORDLIST[word_index]
         mnemonic.append(word)
 
+    print(mnemonic)
     return mnemonic
 
 
@@ -137,6 +142,44 @@ def mnemonics_to_bin(mnemonic_words):
         print(index_bits, len(index_bits))
         bin_str += index_bits
     
+    return bin_str
+
+
+def params_to_bin_str(m, index):
+    """
+    Convert share parameters to binary string
+
+    @param m: minimun shares required to recover the secret
+    @param index: index number of the share
+
+    @return bin_str: binary string of the parameters
+    """
+
+    m_bin = "{0:b}".format(m)
+    index_bin = "{0:b}".format(index)
+
+    #Binary string should be multiple of 5
+
+    m_bin_final_length = math.ceil(len(m_bin) / 5) * 5
+    index_bin_final_length = math.ceil(len(index_bin) / 5) * 5
+    bin_final_length = max(m_bin_final_length, index_bin_final_length)
+
+    m_bin = m_bin.rjust(bin_final_length, '0')
+    index_bin = index_bin.rjust(bin_final_length, '0')
+
+    total_words = int(len(m_bin) / 5)
+
+    bin_str = ""
+    for i in range(0, total_words):
+        leading_bit = '1'
+        
+        if i == total_words-1:
+            leading_bit = '0'
+
+        m_bits = m_bin[i*5 : (i+1)*5]
+        index_bits = index_bin[i*5 : (i+1)*5]
+        bin_str += leading_bit + m_bits + index_bits
+
     return bin_str
 
 
