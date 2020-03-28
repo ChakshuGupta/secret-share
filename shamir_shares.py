@@ -43,7 +43,17 @@ def split_shares(mnemonics, m, n):
 
     shamir39_shares  = list()
     for share in shamir_shares:
-        shamir39_shares.append(shares_to_shamir39_mnemonics(share))
+        mnemonic_words = list()
+        share_index, share = share.split("-")
+        
+        share_binary = bin(int(share, 16))
+        share_binary = share_binary.split("b")[1] # Binary string generated starts with - 0b
+        # Every mnemonic has version as the first word.
+        mnemonic_words.append(VERSION)
+        mnemonic_words.extend(bin_to_mnemonics(share_binary))
+
+        mnemonic_string = " ".join(mnemonic_words)
+        shamir39_shares.append(mnemonic_string)
 
     return shamir39_shares
 
@@ -81,27 +91,6 @@ def combine_shares(shamir_shares):
     recovered_key = " ".join(recovered_key)
     
     return recovered_key
-
-
-def shares_to_shamir39_mnemonics(shamir_share):
-    """
-    Convert the shamir share to shamir39 mnemonic words
-
-    @param shamir_share - Shamir share in hex form
-
-    @return mnemonic_string: corresponding shamir39 mnemonic words
-    """
-    share = shamir_share.split("-")[1]
-
-    share_binary = bin(int(share, 16))
-    share_binary = share_binary.split("b")[1] # Binary string generated starts with - 0b
-    mnemonic_words = list()
-    # Every mnemonic has version as the first word.
-    mnemonic_words.append(VERSION)
-    mnemonic_words.extend(bin_to_mnemonics(share_binary))
-
-    mnemonic_string = " ".join(mnemonic_words)
-    return mnemonic_string
 
 
 def bin_to_mnemonics(bin_str):
