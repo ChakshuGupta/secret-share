@@ -47,7 +47,6 @@ def split_shares(mnemonics, m, n):
         share_index, share = share.split("-")
         
         params_binary = params_to_bin_str(m, int(share_index))
-        print(params_binary)
             
         share_binary = bin(int(share, 16))
         share_binary = share_binary.split("b")[1] # Binary string generated starts with - 0b
@@ -72,16 +71,56 @@ def combine_shares(shamir_shares):
     """
 
     hex_shamir_shares = list()
-    # num_required_shares = -1
+    num_required_shares = -1
     share_index = 1
 
     for share in shamir_shares:
         words = share.split(" ")
 
+        # Check version
         if words[0] != VERSION:
             abort(400, {'message': "Incompatible version!"})
 
-        bin_share = mnemonics_to_bin(words[1:])
+        # Extract params from prefix
+        m_bin_str = ""
+        index_bin_str = ""
+        param_end_index = 1
+        for word in words[1:]:
+            word_index = ENGLISH_WORDLIST.index(word)
+
+            if word_index < 0 :
+                error_message = "Invalid word found in the mnemonics: " + word
+                abort(400, {'message': error_message})
+            
+            word_bin = "{0:b}".format(word_index)
+            word_bin = word_bin.rjust(11, '0')
+            print(word_bin)
+
+            end_of_param = word_bin[0]
+            m_bin_str = m_bin_str + word_bin[1:6]
+            index_bin_str = index_bin_str + word_bin[6:11]
+
+            param_end_index += 1
+            
+            if end_of_param:
+                break
+
+        # Get m and index
+        m = int(m_bin_str, 2)
+        index = int(index_bin_str, 2)
+
+        # Set the required number of shares
+        if num_required_shares == -1:
+            num_required_shares = m
+            # Check if the required number of shares is met
+            if num_required_shares != len(shamir_shares):
+                abort(400, {'message': "Insufficient shares provided! Required - {}, provided - {}".format(num_required_shares, len(shamir_shares))})
+        
+        # Check consistency of m param in all shares -
+        if m != num_required_shares:
+            abort(400, {'message': 'Inconsistent M parameter in the shares!'})
+
+        bin_share = mnemonics_to_bin(words[param_end_index:])
         hex_share =  hex(int(bin_share, 2))
         hex_share = hex_share.split("x")[1]
         hex_share = str(share_index) + "-" + hex_share
