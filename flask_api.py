@@ -21,8 +21,7 @@ def generate_shares():
     if not request.json:
         abort(400)
 
-    # Request.json returns the value in unicode format. Convert to string
-    mnemonics = request.json["mnemonics"].encode("ascii")
+    mnemonics = request.json["mnemonics"]
     m = request.json["m"]
     n = request.json["n"]
     shamir_shares = split_shares(mnemonics, m, n)
