@@ -7,7 +7,7 @@ from flask import abort
 from wordlist.wordlist_english import ENGLISH_WORDLIST
 from pyseltongue import SecretSharer
 
-VERSION = "shamir-share-"
+VERSION = "shamir-share-v1"
 
 def split_shares(mnemonics, m, n):
     """
@@ -32,16 +32,7 @@ def split_shares(mnemonics, m, n):
     if len(mnemonic_words) == 0 :
         abort(400, {'message': "BIP39 Mnemonic words not provided!"})
 
-    bin_str = ""
-    for word in mnemonic_words:
-        word_index = ENGLISH_WORDLIST.index(word)
-        if word_index < 0:
-            error_message = "Invalid word found in the mnemonics: " + word
-            abort(400, {'message': error_message})
-        index_bits =  "{0:b}".format(word_index)
-        index_bits = index_bits.rjust(11, '0')
-        print(index_bits, len(index_bits))
-        bin_str += index_bits
+    bin_str = mnemonics_to_bin(mnemonic_words)
     
     hex_str = hex(int(bin_str, 2))
     hex_str = hex_str.split("x")[1] # Hex string generated starts with - 0x
@@ -62,15 +53,17 @@ def shares_to_shamir39_mnemonics(shamir_share):
 
     @param shamir_share
     """
-    share_number, share = shamir_share.split("-")
+    share = shamir_share.split("-")[1]
+
     share_binary = bin(int(share, 16))
     share_binary = share_binary.split("b")[1] # Binary string generated starts with - 0b
-    mnemonic = list()
+    mnemonic_words = list()
     # Every mnemonic has version as the first word.
-    mnemonic.append(VERSION + share_number)
-    mnemonic.extend(bin_to_mnemonics(share_binary))
-    print(mnemonic)
-    return mnemonic
+    mnemonic_words.append(VERSION)
+    mnemonic_words.extend(bin_to_mnemonics(share_binary))
+
+    mnemonic_string = " ".join(mnemonic_words)
+    return mnemonic_string
 
 
 def bin_to_mnemonics(bin_str):
@@ -78,6 +71,8 @@ def bin_to_mnemonics(bin_str):
     Convert binary string to mnemonics
     
     @param bin_str: Binary string
+
+    @return list of mnemonic words
     """
     mnemonic = list()
 
@@ -88,11 +83,33 @@ def bin_to_mnemonics(bin_str):
 
     for i in range(0, total_words):
         sub_bin_str = bin_str[i*11 : (i+1)*11]
-        print(sub_bin_str)
         word_index = int(sub_bin_str, 2)
         word = ENGLISH_WORDLIST[word_index]
         mnemonic.append(word)
 
     return mnemonic
+
+
+def mnemonics_to_bin(mnemonic_words):
+    """
+    Convert mnemonics to binary string
+
+    @param mnemonic words as a string
+
+    @return binary string
+    """
+    bin_str = ""
+
+    for word in mnemonic_words:
+        word_index = ENGLISH_WORDLIST.index(word)
+        if word_index < 0:
+            error_message = "Invalid word found in the mnemonics: " + word
+            abort(400, {'message': error_message})
+        index_bits =  "{0:b}".format(word_index)
+        index_bits = index_bits.rjust(11, '0')
+        print(index_bits, len(index_bits))
+        bin_str += index_bits
+    
+    return bin_str
 
 
