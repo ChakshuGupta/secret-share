@@ -17,6 +17,7 @@ def split_shares(mnemonics, m, n):
     @param m - must require number of shares
     @param n - number of shares to be created
 
+    @return shamir39_shares 
     """
     mnemonic_words = mnemonics.split(" ")
 
@@ -36,22 +37,59 @@ def split_shares(mnemonics, m, n):
     
     hex_str = hex(int(bin_str, 2))
     hex_str = hex_str.split("x")[1] # Hex string generated starts with - 0x
-    print(hex_str, len(hex_str))
 
     shamir_shares = SecretSharer.split_secret(hex_str, m, n)
     print(shamir_shares)
-    shamir39_mnemonics  = list()
-    for share in shamir_shares:
-        shamir39_mnemonics.append(shares_to_shamir39_mnemonics(share))
 
-    return shamir39_mnemonics
+    shamir39_shares  = list()
+    for share in shamir_shares:
+        shamir39_shares.append(shares_to_shamir39_mnemonics(share))
+
+    return shamir39_shares
+
+
+def combine_shares(shamir_shares):
+    """
+    Combine the shamir39 shares to get BIP39 mnemonics
+    
+    @param shamir_shares
+
+    @return recovered_key: secret key recovered by combining the shamir shares
+    """
+
+    hex_shamir_shares = list()
+    # num_required_shares = -1
+    share_index = 1
+
+    for share in shamir_shares:
+        words = share.split(" ")
+
+        if words[0] != VERSION:
+            abort(400, {'message': "Incompatible version!"})
+
+        bin_share = mnemonics_to_bin(words[1:])
+        hex_share =  hex(int(bin_share, 2))
+        hex_share = hex_share.split("x")[1]
+        hex_share = str(share_index) + "-" + hex_share
+        hex_shamir_shares.append(hex_share)
+        share_index += 1
+    
+    print(hex_shamir_shares)
+    recovered_key_hex = SecretSharer.recover_secret(hex_shamir_shares)
+    recovered_key_bin = bin(int(recovered_key_hex, 16)).split("b")[1]
+    recovered_key = bin_to_mnemonics(recovered_key_bin)
+    recovered_key = " ".join(recovered_key)
+    
+    return recovered_key
 
 
 def shares_to_shamir39_mnemonics(shamir_share):
     """
     Convert the shamir share to shamir39 mnemonic words
 
-    @param shamir_share
+    @param shamir_share - Shamir share in hex form
+
+    @return mnemonic_string: corresponding shamir39 mnemonic words
     """
     share = shamir_share.split("-")[1]
 

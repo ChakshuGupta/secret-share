@@ -2,7 +2,7 @@
 from flask import Flask
 from flask import jsonify, request
 from flask import abort, make_response
-from shamir_shares import *
+from shamir_shares import split_shares, combine_shares
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
@@ -28,6 +28,20 @@ def generate_shares():
 
     print(mnemonics, m, n)
     return jsonify(shares=shamir_shares)
+
+@app.route('/recover_secret', methods=['POST'])
+def recover_secret():
+    """
+    Recover the secret key from the provided shares
+    """
+    if not request.json:
+        abort(400)
+    
+    shamir_shares = request.json["shares"]
+
+    recovered_key = combine_shares(shamir_shares)
+    return jsonify(recovered_key=recovered_key)
+
 
 @app.route('/')
 def index():
