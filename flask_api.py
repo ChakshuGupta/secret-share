@@ -36,6 +36,9 @@ def index():
 
 @app.errorhandler(Exception)
 def handle_error(e):
+    """
+    Error handling function that sends the error back as an HTTP response
+    """
     code = 500
     if isinstance(e, HTTPException):
         code = e.code

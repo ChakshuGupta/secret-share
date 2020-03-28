@@ -7,6 +7,7 @@ from flask import abort
 from wordlist.wordlist_english import ENGLISH_WORDLIST
 from pyseltongue import SecretSharer
 
+VERSION = "shamir-share-"
 
 def split_shares(mnemonics, m, n):
     """
@@ -43,7 +44,7 @@ def split_shares(mnemonics, m, n):
         bin_str += index_bits
     
     hex_str = hex(int(bin_str, 2))
-    hex_str = hex_str.split("x")[1]
+    hex_str = hex_str.split("x")[1] # Hex string generated starts with - 0x
     print(hex_str, len(hex_str))
 
     shamir_shares = SecretSharer.split_secret(hex_str, m, n)
@@ -62,12 +63,14 @@ def shares_to_shamir39_mnemonics(shamir_share):
     @param shamir_share
     """
     share_number, share = shamir_share.split("-")
-    print(share_number)
     share_binary = bin(int(share, 16))
-    share_binary = share_binary.split("b")[1]
-    new_mnemonic = bin_to_mnemonics(share_binary)
-    print(new_mnemonic)
-    return new_mnemonic
+    share_binary = share_binary.split("b")[1] # Binary string generated starts with - 0b
+    mnemonic = list()
+    # Every mnemonic has version as the first word.
+    mnemonic.append(VERSION + share_number)
+    mnemonic.extend(bin_to_mnemonics(share_binary))
+    print(mnemonic)
+    return mnemonic
 
 
 def bin_to_mnemonics(bin_str):
@@ -82,6 +85,7 @@ def bin_to_mnemonics(bin_str):
     total_bits = total_words * 11
     print(total_words, total_bits)
     bin_str = bin_str.rjust(total_bits, '0')
+
     for i in range(0, total_words):
         sub_bin_str = bin_str[i*11 : (i+1)*11]
         print(sub_bin_str)
