@@ -8,6 +8,7 @@ from wordlist.wordlist_english import ENGLISH_WORDLIST
 from pyseltongue import SecretSharer
 
 VERSION = "shamir-share-v1"
+BITS = 8
 
 def split_shares(mnemonics, m, n):
     """
@@ -38,8 +39,12 @@ def split_shares(mnemonics, m, n):
     hex_str = hex(int(bin_str, 2))
     hex_str = hex_str.split("x")[1] # Hex string generated starts with - 0x
 
+    shamir_split(bin_str, m, n)
+
     shamir_shares = SecretSharer.split_secret(hex_str, m, n)
-    print(shamir_shares)
+    recovered = SecretSharer.recover_secret(shamir_shares[0::2])
+    print(shamir_shares[0::2], recovered)
+
 
     shamir39_shares  = list()
     for share in shamir_shares:
@@ -94,7 +99,6 @@ def combine_shares(shamir_shares):
             
             word_bin = "{0:b}".format(word_index)
             word_bin = word_bin.rjust(11, '0')
-            print(word_bin)
 
             end_of_param = word_bin[0]
             m_bin_str = m_bin_str + word_bin[1:6]
@@ -102,7 +106,7 @@ def combine_shares(shamir_shares):
 
             param_end_index += 1
             
-            if end_of_param:
+            if end_of_param == "0":
                 break
 
         # Get m and index
@@ -123,11 +127,10 @@ def combine_shares(shamir_shares):
         bin_share = mnemonics_to_bin(words[param_end_index:])
         hex_share =  hex(int(bin_share, 2))
         hex_share = hex_share.split("x")[1]
-        hex_share = str(share_index) + "-" + hex_share
+        hex_share = str(index) + "-" + hex_share
         hex_shamir_shares.append(hex_share)
         share_index += 1
-    
-    print(hex_shamir_shares)
+
     recovered_key_hex = SecretSharer.recover_secret(hex_shamir_shares)
     recovered_key_bin = bin(int(recovered_key_hex, 16)).split("b")[1]
     recovered_key = bin_to_mnemonics(recovered_key_bin)
@@ -148,7 +151,6 @@ def bin_to_mnemonics(bin_str):
 
     total_words = int(math.ceil(len(bin_str)/11))
     total_bits = total_words * 11
-    print(total_words, total_bits)
     bin_str = bin_str.rjust(total_bits, '0')
 
     for i in range(0, total_words):
@@ -157,7 +159,6 @@ def bin_to_mnemonics(bin_str):
         word = ENGLISH_WORDLIST[word_index]
         mnemonic.append(word)
 
-    print(mnemonic)
     return mnemonic
 
 
@@ -178,7 +179,6 @@ def mnemonics_to_bin(mnemonic_words):
             abort(400, {'message': error_message})
         index_bits =  "{0:b}".format(word_index)
         index_bits = index_bits.rjust(11, '0')
-        print(index_bits, len(index_bits))
         bin_str += index_bits
     
     return bin_str
@@ -197,8 +197,7 @@ def params_to_bin_str(m, index):
     m_bin = "{0:b}".format(m)
     index_bin = "{0:b}".format(index)
 
-    #Binary string should be multiple of 5
-
+    # Binary string should be multiple of 5
     m_bin_final_length = math.ceil(len(m_bin) / 5) * 5
     index_bin_final_length = math.ceil(len(index_bin) / 5) * 5
     bin_final_length = max(m_bin_final_length, index_bin_final_length)
@@ -221,4 +220,10 @@ def params_to_bin_str(m, index):
 
     return bin_str
 
+
+def shamir_split(secret, n, m):
+    """
+    """
+    secret = '1' + secret
+    print(len(secret), secret)
 
