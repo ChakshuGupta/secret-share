@@ -39,8 +39,6 @@ def split_shares(mnemonics, m, n):
     hex_str = hex(int(bin_str, 2))
     hex_str = hex_str.split("x")[1] # Hex string generated starts with - 0x
 
-    shamir_split(bin_str, m, n)
-
     shamir_shares = SecretSharer.split_secret(hex_str, m, n)
     recovered = SecretSharer.recover_secret(shamir_shares[0::2])
     print(shamir_shares[0::2], recovered)
@@ -219,11 +217,3 @@ def params_to_bin_str(m, index):
         bin_str += leading_bit + m_bits + index_bits
 
     return bin_str
-
-
-def shamir_split(secret, n, m):
-    """
-    """
-    secret = '1' + secret
-    print(len(secret), secret)
-
