@@ -3,12 +3,33 @@ import math
 import struct
 
 from flask import abort
-
+from mnemonic import Mnemonic
 from wordlist.wordlist_english import ENGLISH_WORDLIST
 from pyseltongue import SecretSharer
 
 VERSION = "shamir-share-v1"
 BITS = 8
+STRENGTH_WORDS_MAP = {
+    12 : 128,
+    15 : 160,
+    18 : 192,
+    21 : 224,
+    24 : 256
+}
+
+def generate(number_of_words):
+    """
+    Generate a new set of mnemonic words, given the number of words
+
+    @param number_of_words
+
+    @return : Set of mnemonic words
+    """
+    new_mnemonic = Mnemonic("english")
+    strength = STRENGTH_WORDS_MAP[number_of_words]
+
+    return(new_mnemonic.generate(strength))
+
 
 def split_shares(mnemonics, m, n):
     """
