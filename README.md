@@ -7,4 +7,4 @@
 
 ### How to run -
 
-python3 flask_api.py
+python3 app.py
