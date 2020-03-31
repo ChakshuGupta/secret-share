@@ -17,5 +17,8 @@ sudo python3 setup.py develop
 ### Run CLI - 
 1. Usage -
     - shamir39 --help
+    - shamir39 gen --help
+    - shamir39 split --help
+
 
 
