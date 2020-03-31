@@ -11,7 +11,8 @@ def main():
 
 
 @main.command()
-@click.option('--words', '-w', default=12, required=False, help="Number of words in the mnemoics. Options - [12,15,18,21,24]", show_default=True)
+@click.option('--words', '-w', default=12, required=False, 
+                help="Number of words in the mnemoics. Options - [12,15,18,21,24]", show_default=True)
 @click.option('--export', is_flag=True, required=False, help="Export the generated mnemonics to a file")
 def gen(words, export):
     """
@@ -30,19 +31,22 @@ def gen(words, export):
 
 
 @main.command()
-@click.option('--input', default='', required=False, help="Input the BIP39 mnemonics through file. [Optional]")
+@click.option('--input-type', '-i', type=click.Choice(["CMD", "FILE"]), default='CMD', required=True,\
+                 help="Coose the input format for the BIP39 mnemonics - file or command line.", show_default=True)
 @click.option('-n', default=2, help="Number of splits")
 @click.option('-m', default=2, help="Minimum number of shares required to recover")
-@click.option('--export', type=click.Choice(["SINGLE", "MULTI"]), required=False, help="Export the generated shares to a single file or multiple files (each share in separate file)")
-def split(input, m, n, export):
+@click.option('--export', type=click.Choice(["SINGLE", "MULTI"]), required=False,\
+                help="Export the generated shares to a single file or multiple files (each share in separate file)")
+def split(input_type, m, n, export):
     """
     Split the BIP39 mnemonic into Shamir39 shares
     """
     mnemonic = ""
-    if not input:
+    if input_type == "CMD":
         mnemonic = click.prompt("BIP39 Mnemonics: ", type=str)
-    else:
-        file_handler = open(input, "r")
+    elif input_type == "FILE":
+        file_name = click.prompt("Input File: ", type=str)
+        file_handler = open(file_name, "r")
         mnemonic = file_handler.read()
     
     shares = split_shares(mnemonic, m, n)
@@ -59,6 +63,14 @@ def split(input, m, n, export):
             file_handler.write(share)
             file_handler.write("\n")
         file_handler.close()
+
+
+@main.command()
+def recover():
+    """
+    Recover the private key from the given shares.
+    """
+    pass
 
 
 if __name__ == "__main__":
