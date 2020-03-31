@@ -61,8 +61,6 @@ def split_shares(mnemonics, m, n):
     hex_str = hex_str.split("x")[1] # Hex string generated starts with - 0x
 
     shamir_shares = SecretSharer.split_secret(hex_str, m, n)
-    recovered = SecretSharer.recover_secret(shamir_shares[0::2])
-    print(shamir_shares[0::2], recovered)
 
 
     shamir39_shares  = list()

@@ -2,10 +2,11 @@
 from flask import Flask
 from flask import jsonify, request
 from flask import abort, make_response
-from shamir_shares import split_shares, combine_shares, generate
+from shamir39.shamir_shares import split_shares, combine_shares, generate
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
+
 
 @app.route('/generate_mnemonics', methods=['POST'])
 def generate_mnemonics():
@@ -13,13 +14,13 @@ def generate_mnemonics():
     Generate a new set of BIP 39 mnemonics
     """
     if not request.json:
-        abort(400)
+        number_of_words = 12
     
     number_of_words = request.json["number_of_words"]
-    print(type(number_of_words))
-
+  
     new_mnemonic = generate(number_of_words)
     return jsonify(mnemonic=new_mnemonic)
+
 
 @app.route('/generate_shares', methods=['POST'])
 def generate_shares():
@@ -36,6 +37,7 @@ def generate_shares():
 
     print(mnemonics, m, n)
     return jsonify(shares=shamir_shares)
+
 
 @app.route('/recover_secret', methods=['POST'])
 def recover_secret():
@@ -65,6 +67,7 @@ def handle_error(e):
     if isinstance(e, HTTPException):
         code = e.code
     return jsonify(error=str(e)), code
+
 
 if __name__ == '__main__':
     app.run(debug=True)
