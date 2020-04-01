@@ -66,8 +66,7 @@ def split_shares(mnemonics, m, n):
     shamir39_shares  = list()
     for share in shamir_shares:
         mnemonic_words = list()
-        share_index, share = share.split("-")
-        print(share_index)        
+        share_index, share = share.split("-")        
         params_binary = params_to_bin_str(m, int(share_index, 16))
             
         share_binary = bin(int(share, 16))

@@ -92,8 +92,9 @@ def recover(input_file):
         dir_path = input_file[1]
         if os.path.isdir(dir_path):
             file_list = os.listdir(dir_path)
-            # iterate through the files in the directory
+            # Iterate through the files in the directory
             for share_file in file_list:
+                # Check for the file format
                 if os.path.splitext(share_file)[1] == ".txt":
                     file_path = os.path.join(dir_path, share_file)
                     file_handler = open(file_path, "r")
@@ -101,6 +102,8 @@ def recover(input_file):
                         line = line.strip()
                         if line != "":
                             shamir_shares.append(line)
+                else:
+                    raise click.FileError("Incorrect file format!")
         else:
             raise click.BadParameter("Directory doesn't exist!")
 
