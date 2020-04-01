@@ -1,6 +1,7 @@
 import argparse
 import click
 import os
+import os.path
 import sys
 
 from shamir39.shamir_shares import generate, split_shares, combine_shares
@@ -46,8 +47,11 @@ def split(input_type, m, n, export):
         mnemonic = click.prompt("BIP39 Mnemonics: ", type=str)
     elif input_type == "FILE":
         file_path = click.prompt("Input File Path: ", type=str)
-        file_handler = open(file_path, "r")
-        mnemonic = file_handler.read()
+        if os.path.isfile(file_path):
+            file_handler = open(file_path, "r")
+            mnemonic = file_handler.read()
+        else:
+            raise click.FileError("File doesn't exist.")
     
     shares = split_shares(mnemonic, m, n)
     click.echo(shares)
@@ -66,22 +70,40 @@ def split(input_type, m, n, export):
 
 
 @main.command()
-@click.option('--input-file', '-i', type=click.Choice(["SINGLE", "MULTI"]), required=True,\
-                 help="Choose the method to input the shares for recovery. Single file or multiple files.")
+@click.option('--input-file', '-i', nargs=2,type=(click.Choice(["SINGLE", "MULTI"]), str), required=True,\
+                 help="Choose the method to input the shares for recovery. With SINGLE give FILEPATH, with MULTI give DIR_PATH")
 def recover(input_file):
     """
     Recover the private key from the given shares.
     """
     shamir_shares = list()
-    if input_file == "SINGLE":
-        file_path = click.prompt("Input File Path: ", type=str)
-        file_handler = open(file_path, "r")
-        for line in file_handler:
-            line = line.strip()
-            if line != "":
-                shamir_shares.append(line)    
+    if input_file[0] == "SINGLE":
+        file_path = input_file[1]
+        # Check if file exists
+        if os.path.isfile(file_path):
+            file_handler = open(file_path, "r")
+            for line in file_handler:
+                line = line.strip()
+                if line != "":
+                    shamir_shares.append(line)
+        else:
+            raise click.FileError("File doesn't exist.")
     else:
-        raise click.BadParameter("Not implemented yet")
+        dir_path = input_file[1]
+        if os.path.isdir(dir_path):
+            file_list = os.listdir(dir_path)
+            # iterate through the files in the directory
+            for share_file in file_list:
+                if os.path.splitext(share_file)[1] == ".txt":
+                    file_path = os.path.join(dir_path, share_file)
+                    file_handler = open(file_path, "r")
+                    for line in file_handler:
+                        line = line.strip()
+                        if line != "":
+                            shamir_shares.append(line)
+        else:
+            raise click.BadParameter("Directory doesn't exist!")
+
     
     recovered_key = combine_shares(shamir_shares)
     click.echo(recovered_key)
