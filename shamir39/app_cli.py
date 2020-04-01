@@ -3,7 +3,7 @@ import click
 import os
 import sys
 
-from shamir39.shamir_shares import generate, split_shares
+from shamir39.shamir_shares import generate, split_shares, combine_shares
 
 @click.group()
 def main():
@@ -32,7 +32,7 @@ def gen(words, export):
 
 @main.command()
 @click.option('--input-type', '-i', type=click.Choice(["CMD", "FILE"]), default='CMD', required=True,\
-                 help="Coose the input format for the BIP39 mnemonics - file or command line.", show_default=True)
+                 help="Choose the input format for the BIP39 mnemonics - file or command line.", show_default=True)
 @click.option('-n', default=2, help="Number of splits")
 @click.option('-m', default=2, help="Minimum number of shares required to recover")
 @click.option('--export', type=click.Choice(["SINGLE", "MULTI"]), required=False,\
@@ -45,8 +45,8 @@ def split(input_type, m, n, export):
     if input_type == "CMD":
         mnemonic = click.prompt("BIP39 Mnemonics: ", type=str)
     elif input_type == "FILE":
-        file_name = click.prompt("Input File: ", type=str)
-        file_handler = open(file_name, "r")
+        file_path = click.prompt("Input File Path: ", type=str)
+        file_handler = open(file_path, "r")
         mnemonic = file_handler.read()
     
     shares = split_shares(mnemonic, m, n)
@@ -57,7 +57,7 @@ def split(input_type, m, n, export):
             file_handler = open("shamir-share-{}.txt".format(shares.index(share)+1), "w")
             file_handler.write(share)
             file_handler.close()
-    elif export == "SINGLE":
+    else:
         file_handler = open("shamir-share.txt", "w")
         for share in shares:
             file_handler.write(share)
@@ -66,11 +66,25 @@ def split(input_type, m, n, export):
 
 
 @main.command()
-def recover():
+@click.option('--input-file', '-i', type=click.Choice(["SINGLE", "MULTI"]), required=True,\
+                 help="Choose the method to input the shares for recovery. Single file or multiple files.")
+def recover(input_file):
     """
     Recover the private key from the given shares.
     """
-    pass
+    shamir_shares = list()
+    if input_file == "SINGLE":
+        file_path = click.prompt("Input File Path: ", type=str)
+        file_handler = open(file_path, "r")
+        for line in file_handler:
+            line = line.strip()
+            if line != "":
+                shamir_shares.append(line)    
+    else:
+        raise click.BadParameter("Not implemented yet")
+    
+    recovered_key = combine_shares(shamir_shares)
+    click.echo(recovered_key)
 
 
 if __name__ == "__main__":

@@ -67,8 +67,8 @@ def split_shares(mnemonics, m, n):
     for share in shamir_shares:
         mnemonic_words = list()
         share_index, share = share.split("-")
-        
-        params_binary = params_to_bin_str(m, int(share_index))
+        print(share_index)        
+        params_binary = params_to_bin_str(m, int(share_index, 16))
             
         share_binary = bin(int(share, 16))
         share_binary = share_binary.split("b")[1] # Binary string generated starts with - 0b
@@ -128,14 +128,14 @@ def combine_shares(shamir_shares):
 
         # Get m and index
         m = int(m_bin_str, 2)
-        index = int(index_bin_str, 2)
+        index = hex(int(index_bin_str, 2)).split("x")[1]
 
         # Set the required number of shares
         if num_required_shares == -1:
             num_required_shares = m
             # Check if the required number of shares is met
             if num_required_shares != len(shamir_shares):
-                abort(400, {'message': "Insufficient shares provided! Required - {}, provided - {}".format(num_required_shares, len(shamir_shares))})
+                abort(400, {'message': "Insufficient shares provided!"})
         
         # Check consistency of m param in all shares -
         if m != num_required_shares:
