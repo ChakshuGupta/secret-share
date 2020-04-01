@@ -1,0 +1,1 @@
+pyuic5 shamir_app.ui -o shamir_app.py -x
