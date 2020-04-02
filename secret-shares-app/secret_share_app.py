@@ -63,7 +63,7 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 file_handler.write("\n")
             file_handler.close()
 
-        if self.multiRadioButton.isChecked():
+        else:
             for share in shares:
                 file_handler = open("shamir-share-{}.txt".format(shares.index(share)+1), "w")
                 file_handler.write(share)
@@ -90,6 +90,7 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         self.sharesTextEdit.clear()
         self.mnemonicsTextEdit.clear()
+        self.singleRadioButton.setChecked(True)
 
 
     def reset_combine(self):
@@ -101,9 +102,26 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     
     def print_document(self):
-        dialog = QtPrintSupport.QPrintDialog()
-        if dialog.exec_() == QtWidgets.QDialog.Accepted:
-            self.sharesTextEdit.document().print_(dialog.printer())
+        """
+        Callback function for the print button
+        """
+
+        shares = self.sharesTextEdit.toPlainText().split("\n\n")
+        if len(shares) > 0:
+            if self.singleRadioButton.isChecked():
+                dialog = QtPrintSupport.QPrintDialog()
+                if dialog.exec_() == QtWidgets.QDialog.Accepted:
+                    self.sharesTextEdit.document().print_(dialog.printer())
+            
+            else:
+                for share in shares:
+                    dialog = QtPrintSupport.QPrintDialog()
+                    if dialog.exec_() == QtWidgets.QDialog.Accepted:
+                        print_doc = QTextDocument(share)
+                        print_doc.print_(dialog.printer())
+
+                
+
 
 
  
