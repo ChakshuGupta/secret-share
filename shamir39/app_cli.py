@@ -4,7 +4,7 @@ import os
 import os.path
 import sys
 
-from shamir39.shamir_shares import generate, split_shares, combine_shares
+from shamir39.shamir_shares import generate, split_shares, combine_shares, Encoding
 
 @click.group()
 def main():
@@ -36,9 +36,10 @@ def gen(words, export):
                  help="Choose the input format for the BIP39 mnemonics - file or command line.", show_default=True)
 @click.option('-n', default=2, help="Number of splits")
 @click.option('-m', default=2, help="Minimum number of shares required to recover")
+@click.option('--encoding', default=Encoding.BIP39, help="Give flag to switch to BASE58 encoding of shares. Eg. -e 1", required=False, show_default=True)
 @click.option('--export', type=click.Choice(["SINGLE", "MULTI"]), required=False,\
                 help="Export the generated shares to a single file or multiple files (each share in separate file)")
-def split(input_type, m, n, export):
+def split(input_type, m, n, encoding, export):
     """
     Split the BIP39 mnemonic into Shamir39 shares
     """
@@ -53,7 +54,7 @@ def split(input_type, m, n, export):
         else:
             raise click.FileError("File doesn't exist.")
     
-    shares = split_shares(mnemonic, m, n)
+    shares = split_shares(mnemonic, m, n, encoding)
     click.echo(shares)
 
     if export == "MULTI":
@@ -72,7 +73,8 @@ def split(input_type, m, n, export):
 @main.command()
 @click.option('--input-file', '-i', nargs=2,type=(click.Choice(["SINGLE", "MULTI"]), str), required=True,\
                  help="Choose the method to input the shares for recovery. With SINGLE give FILEPATH, with MULTI give DIR_PATH")
-def recover(input_file):
+@click.option('--encoding', default=Encoding.BIP39, help="Give flag to switch to BASE58 encoding for recovery. Eg. -e 1", required=False, show_default=True)
+def recover(input_file, encoding):
     """
     Recover the private key from the given shares.
     """
@@ -108,7 +110,7 @@ def recover(input_file):
             raise click.BadParameter("Directory doesn't exist!")
 
     
-    recovered_key = combine_shares(shamir_shares)
+    recovered_key = combine_shares(shamir_shares, encoding)
     click.echo(recovered_key)
 
 
