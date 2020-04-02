@@ -6,7 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from shamir39.shamir_shares import generate, split_shares, combine_shares
+from shamir39.shamir_shares import generate, split_shares, combine_shares, Encoding
 from werkzeug.exceptions import BadRequest
 
 qtCreatorFile = "app_ui.ui"
@@ -47,7 +47,11 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
             m = self.mBox.value()
             n = self.nBox.value()
             mnemonics = self.mnemonicsTextEdit.toPlainText()
-            shares = split_shares(mnemonics, m, n)
+            encoding = Encoding.BIP39
+            if self.encodingComboBox1.currentIndex() == 1:
+                encoding = Encoding.BASE58
+
+            shares = split_shares(mnemonics, m, n, encoding)
             shares_text = "\n\n".join(shares)
 
             self.sharesTextEdit.setText(shares_text)
@@ -98,12 +102,16 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         try:
             input_shares = self.recoverSharesTextEdit.toPlainText().split("\n")
+            encoding = Encoding.BIP39
+            if self.encodingComboBox2.currentIndex() == 1:
+                encoding = Encoding.BASE58
+
             shares = list()
             for share in input_shares:
                 share = share.strip()
                 if share != "":
                     shares.append(share)          
-            recovered_key = combine_shares(shares)
+            recovered_key = combine_shares(shares, encoding)
             self.recoveredKeyTextEdit.setText(recovered_key)
         
         except BadRequest as e:
@@ -122,6 +130,7 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.sharesTextEdit.clear()
         self.mnemonicsTextEdit.clear()
         self.singleRadioButton.setChecked(True)
+        self.encodingComboBox1.setCurrentIndex(0)
 
 
     def reset_combine(self):
@@ -130,6 +139,8 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         self.recoverSharesTextEdit.clear()
         self.recoveredKeyTextEdit.clear()
+        self.encodingComboBox2.setCurrentIndex(0)
+
 
     
     def print_document(self):
