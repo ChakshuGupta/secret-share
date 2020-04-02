@@ -1,5 +1,6 @@
-Flask==1.1.1
-Werkzeug==1.0.0
-Click==7.0
 pyseltongue==0.3.5
 mnemonic==0.19
+Click==7.0
+Flask==1.1.1
+utilitybelt==0.2.6
+Werkzeug==1.0.0
