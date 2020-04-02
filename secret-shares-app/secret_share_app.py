@@ -19,8 +19,12 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.generateButton.clicked.connect(self.generate_mnemonics)
         self.splitButton.clicked.connect(self.split_key)
+        self.exportButton.clicked.connect(self.export_shares)
 
     def generate_mnemonics(self):
+        """
+        Callback function for generate button
+        """
         number_of_words = int(self.numberWords.currentText())
         mnemonics = generate(number_of_words)
 
@@ -28,6 +32,9 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mnemonicsTextEdit.setText(mnemonics)
 
     def split_key(self):
+        """
+        Callback function for split button
+        """
         m = self.mBox.value()
         n = self.nBox.value()
         mnemonics = self.mnemonicsTextEdit.toPlainText()
@@ -35,6 +42,27 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         shares_text = "\n\n".join(shares)
 
         self.sharesTextEdit.setText(shares_text)
+
+    def export_shares(self):
+        """
+        Callback function for export button
+        """
+        shares = self.sharesTextEdit.toPlainText().split("\n\n")
+
+        if self.singleRadioButton.isChecked():
+            file_handler = open("shamir-share.txt", "w")
+            for share in shares:
+                file_handler.write(share)
+                file_handler.write("\n")
+            file_handler.close()
+
+        if self.multiRadioButton.isChecked():
+            for share in shares:
+                file_handler = open("shamir-share-{}.txt".format(shares.index(share)+1), "w")
+                file_handler.write(share)
+                file_handler.close()
+
+
  
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

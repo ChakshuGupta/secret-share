@@ -313,7 +313,7 @@
         <property name="font">
          <font>
           <family>Utopia</family>
-          <pointsize>19</pointsize>
+          <pointsize>24</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -436,7 +436,7 @@
             <property name="font">
              <font>
               <family>Utopia</family>
-              <pointsize>15</pointsize>
+              <pointsize>17</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1055,7 +1055,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="radioButton">
+             <widget class="QRadioButton" name="singleRadioButton">
               <property name="maximumSize">
                <size>
                 <width>100</width>
@@ -1111,10 +1111,10 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="radioButton_2">
+             <widget class="QRadioButton" name="multiRadioButton">
               <property name="maximumSize">
                <size>
-                <width>100</width>
+                <width>120</width>
                 <height>16777215</height>
                </size>
               </property>
