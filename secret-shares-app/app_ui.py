@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(995, 887)
+        MainWindow.resize(995, 761)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -770,7 +770,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sharesTextEdit.sizePolicy().hasHeightForWidth())
         self.sharesTextEdit.setSizePolicy(sizePolicy)
-        self.sharesTextEdit.setMinimumSize(QtCore.QSize(0, 450))
+        self.sharesTextEdit.setMinimumSize(QtCore.QSize(0, 330))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(211, 215, 207))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -1245,7 +1245,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.recoverSharesTextEdit.sizePolicy().hasHeightForWidth())
         self.recoverSharesTextEdit.setSizePolicy(sizePolicy)
-        self.recoverSharesTextEdit.setMinimumSize(QtCore.QSize(0, 450))
+        self.recoverSharesTextEdit.setMinimumSize(QtCore.QSize(0, 350))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(46, 52, 54))
         brush.setStyle(QtCore.Qt.SolidPattern)
