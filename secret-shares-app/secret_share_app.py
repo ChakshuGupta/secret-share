@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from shamir39.shamir_shares import generate, split_shares
+from shamir39.shamir_shares import generate, split_shares, combine_shares
 
 qtCreatorFile = "app_ui.ui"
  
@@ -20,6 +20,7 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.generateButton.clicked.connect(self.generate_mnemonics)
         self.splitButton.clicked.connect(self.split_key)
         self.exportButton.clicked.connect(self.export_shares)
+        self.combineButton.clicked.connect(self.recover_key)
 
     def generate_mnemonics(self):
         """
@@ -62,6 +63,20 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 file_handler.write(share)
                 file_handler.close()
 
+    
+    def recover_key(self):
+        """
+        Callback function for combine button to recover the key
+        """
+        input_shares = self.recoverSharesTextEdit.toPlainText().split("\n")
+        shares = list()
+        for share in input_shares:
+            share = share.strip()
+            if share != "":
+                shares.append(share)
+        print(input_shares)            
+        recovered_key = combine_shares(shares)
+        self.recoveredKeyTextEdit.setText(recovered_key)
 
  
 if __name__ == "__main__":

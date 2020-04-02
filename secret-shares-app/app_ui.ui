@@ -750,7 +750,7 @@
          </palette>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="splitTab">
          <property name="sizePolicy">
@@ -2020,18 +2020,18 @@
                <colorrole role="WindowText">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>211</red>
-                  <green>215</green>
-                  <blue>207</blue>
+                  <red>46</red>
+                  <green>52</green>
+                  <blue>54</blue>
                  </color>
                 </brush>
                </colorrole>
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>238</red>
-                  <green>238</green>
-                  <blue>236</blue>
+                  <red>46</red>
+                  <green>52</green>
+                  <blue>54</blue>
                  </color>
                 </brush>
                </colorrole>
@@ -2049,18 +2049,18 @@
                <colorrole role="WindowText">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>211</red>
-                  <green>215</green>
-                  <blue>207</blue>
+                  <red>46</red>
+                  <green>52</green>
+                  <blue>54</blue>
                  </color>
                 </brush>
                </colorrole>
                <colorrole role="Text">
                 <brush brushstyle="SolidPattern">
                  <color alpha="255">
-                  <red>238</red>
-                  <green>238</green>
-                  <blue>236</blue>
+                  <red>46</red>
+                  <green>52</green>
+                  <blue>54</blue>
                  </color>
                 </brush>
                </colorrole>
