@@ -21,6 +21,9 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.splitButton.clicked.connect(self.split_key)
         self.exportButton.clicked.connect(self.export_shares)
         self.combineButton.clicked.connect(self.recover_key)
+        self.resetSplitButton.clicked.connect(self.reset_split)
+        self.resetCombineButton.clicked.connect(self.reset_combine)
+
 
     def generate_mnemonics(self):
         """
@@ -31,6 +34,7 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.sharesTextEdit.clear()
         self.mnemonicsTextEdit.setText(mnemonics)
+
 
     def split_key(self):
         """
@@ -43,6 +47,7 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         shares_text = "\n\n".join(shares)
 
         self.sharesTextEdit.setText(shares_text)
+
 
     def export_shares(self):
         """
@@ -73,10 +78,26 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         for share in input_shares:
             share = share.strip()
             if share != "":
-                shares.append(share)
-        print(input_shares)            
+                shares.append(share)          
         recovered_key = combine_shares(shares)
         self.recoveredKeyTextEdit.setText(recovered_key)
+
+
+    def reset_split(self):
+        """
+        Callback function for the reset in split tab
+        """
+        self.sharesTextEdit.clear()
+        self.mnemonicsTextEdit.clear()
+
+
+    def reset_combine(self):
+        """
+        Callback function for the reset in combine tab
+        """
+        self.recoverSharesTextEdit.clear()
+        self.recoveredKeyTextEdit.clear()
+
 
  
 if __name__ == "__main__":
