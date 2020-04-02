@@ -21,4 +21,7 @@ sudo python3 setup.py develop
     - shamir39 split --help
 
 
+### Run the Application
+- cd secret-share-app
+- python3 secret_share_app.py
 
