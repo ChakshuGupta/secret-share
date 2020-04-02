@@ -319,10 +319,11 @@
         </property>
         <property name="font">
          <font>
-          <family>Utopia</family>
-          <pointsize>24</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <family>Umpush</family>
+          <pointsize>23</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
          </font>
         </property>
         <property name="text">
@@ -820,14 +821,14 @@
             </property>
             <property name="font">
              <font>
-              <family>Utopia</family>
+              <family>Umpush</family>
               <pointsize>17</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
+              <weight>50</weight>
+              <bold>false</bold>
              </font>
             </property>
             <property name="text">
-             <string>Split</string>
+             <string>Split Shares</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -3064,14 +3065,14 @@
             </property>
             <property name="font">
              <font>
-              <family>Utopia</family>
+              <family>Umpush</family>
               <pointsize>17</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
+              <weight>50</weight>
+              <bold>false</bold>
              </font>
             </property>
             <property name="text">
-             <string>Combine</string>
+             <string>Combine Shares</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
