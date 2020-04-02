@@ -2,7 +2,7 @@
 from flask import Flask
 from flask import jsonify, request
 from flask import abort, make_response
-from shamir39.shamir_shares import split_shares, combine_shares, generate
+from shamir39.shamir_shares import split_shares, combine_shares, generate, Encoding
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
@@ -33,7 +33,12 @@ def generate_shares():
     mnemonics = request.json["mnemonics"]
     m = request.json["m"]
     n = request.json["n"]
-    shamir_shares = split_shares(mnemonics, m, n)
+    encoding_str = request.json["encoding"]
+
+    encoding = Encoding.BIP39
+    if encoding_str == "BASE58":
+        encoding = Encoding.BASE58
+    shamir_shares = split_shares(mnemonics, m, n, encoding)
 
     print(mnemonics, m, n)
     return jsonify(shares=shamir_shares)
@@ -48,8 +53,13 @@ def recover_secret():
         abort(400)
     
     shamir_shares = request.json["shares"]
+    encoding_str = request.json["encoding"]
 
-    recovered_key = combine_shares(shamir_shares)
+    encoding = Encoding.BIP39
+    if encoding_str == "BASE58":
+        encoding = Encoding.BASE58
+
+    recovered_key = combine_shares(shamir_shares, encoding)
     return jsonify(recovered_key=recovered_key)
 
 
