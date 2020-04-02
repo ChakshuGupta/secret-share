@@ -133,7 +133,7 @@ def combine_shares(shamir_shares):
         if num_required_shares == -1:
             num_required_shares = m
             # Check if the required number of shares is met
-            if num_required_shares > len(shamir_shares):
+            if len(shamir_shares) < num_required_shares:
                 abort(400, {'message': "Insufficient shares provided!"})
         
         # Check consistency of m param in all shares -

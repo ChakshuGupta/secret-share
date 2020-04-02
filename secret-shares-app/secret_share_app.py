@@ -1,4 +1,5 @@
 import sys
+import json
 
 from PyQt5 import QtCore, QtPrintSupport, QtWidgets, uic
 from PyQt5.QtCore import *
@@ -6,6 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from shamir39.shamir_shares import generate, split_shares, combine_shares
+from werkzeug.exceptions import BadRequest
 
 qtCreatorFile = "app_ui.ui"
  
@@ -41,13 +43,22 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         Callback function for split button
         """
-        m = self.mBox.value()
-        n = self.nBox.value()
-        mnemonics = self.mnemonicsTextEdit.toPlainText()
-        shares = split_shares(mnemonics, m, n)
-        shares_text = "\n\n".join(shares)
+        try:
+            m = self.mBox.value()
+            n = self.nBox.value()
+            mnemonics = self.mnemonicsTextEdit.toPlainText()
+            shares = split_shares(mnemonics, m, n)
+            shares_text = "\n\n".join(shares)
 
-        self.sharesTextEdit.setText(shares_text)
+            self.sharesTextEdit.setText(shares_text)
+        
+        except BadRequest as e:
+            error_dialog = QtWidgets.QErrorMessage()
+            error_dialog.showMessage("Bad Request! Invalid Input!")
+        
+        except Exception:
+            error_dialog = QtWidgets.QErrorMessage()
+            error_dialog.showMessage("Error!")
 
 
     def export_shares(self):
@@ -56,32 +67,52 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         shares = self.sharesTextEdit.toPlainText().split("\n\n")
 
-        if self.singleRadioButton.isChecked():
-            file_handler = open("shamir-share.txt", "w")
-            for share in shares:
-                file_handler.write(share)
-                file_handler.write("\n")
-            file_handler.close()
-
-        else:
-            for share in shares:
-                file_handler = open("shamir-share-{}.txt".format(shares.index(share)+1), "w")
-                file_handler.write(share)
+        try:
+            if self.singleRadioButton.isChecked():
+                file_handler = open("shamir-share.txt", "w")
+                for share in shares:
+                    file_handler.write(share)
+                    file_handler.write("\n")
                 file_handler.close()
+                QMessageBox.about(self, "Success" , "Shares export to text file succeeded!")
+
+            else:
+                for share in shares:
+                    file_handler = open("shamir-share-{}.txt".format(shares.index(share)+1), "w")
+                    file_handler.write(share)
+                    file_handler.close()
+                QMessageBox.about(self, "Success" , "Shares export to separate files succeeded!")
+
+        except IOError as e:
+            error_dialog = QtWidgets.QErrorMessage()
+            error_dialog.showMessage("Error exporting shares to file!")
+
+        except Exception:
+            error_dialog = QtWidgets.QErrorMessage()
+            error_dialog.showMessage("Error!")
 
     
     def recover_key(self):
         """
         Callback function for combine button to recover the key
         """
-        input_shares = self.recoverSharesTextEdit.toPlainText().split("\n")
-        shares = list()
-        for share in input_shares:
-            share = share.strip()
-            if share != "":
-                shares.append(share)          
-        recovered_key = combine_shares(shares)
-        self.recoveredKeyTextEdit.setText(recovered_key)
+        try:
+            input_shares = self.recoverSharesTextEdit.toPlainText().split("\n")
+            shares = list()
+            for share in input_shares:
+                share = share.strip()
+                if share != "":
+                    shares.append(share)          
+            recovered_key = combine_shares(shares)
+            self.recoveredKeyTextEdit.setText(recovered_key)
+        
+        except BadRequest as e:
+            error_dialog = QtWidgets.QErrorMessage(self)
+            error_dialog.showMessage("Bad Request! Invalid input!")
+        
+        except Exception:
+            error_dialog = QtWidgets.QErrorMessage()
+            error_dialog.showMessage("Error!")
 
 
     def reset_split(self):
@@ -119,12 +150,12 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
                     if dialog.exec_() == QtWidgets.QDialog.Accepted:
                         print_doc = QTextDocument(share)
                         print_doc.print_(dialog.printer())
+        else:
+            error_dialog = QtWidgets.QErrorMessage()
+            error_dialog.showMessage("No shares entered!")
 
                 
 
-
-
- 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = SecretShareApp()
