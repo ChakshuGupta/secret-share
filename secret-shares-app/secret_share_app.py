@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5 import QtCore, QtPrintSupport, QtWidgets, uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -23,6 +23,7 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.combineButton.clicked.connect(self.recover_key)
         self.resetSplitButton.clicked.connect(self.reset_split)
         self.resetCombineButton.clicked.connect(self.reset_combine)
+        self.printButton.clicked.connect(self.print_document)
 
 
     def generate_mnemonics(self):
@@ -97,6 +98,12 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         self.recoverSharesTextEdit.clear()
         self.recoveredKeyTextEdit.clear()
+
+    
+    def print_document(self):
+        dialog = QtPrintSupport.QPrintDialog()
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
+            self.sharesTextEdit.document().print_(dialog.printer())
 
 
  

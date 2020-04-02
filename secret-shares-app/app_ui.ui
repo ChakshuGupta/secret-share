@@ -2325,9 +2325,9 @@
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="30,0,0,0">
+           <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="30,0,0,0,0">
             <property name="spacing">
-             <number>100</number>
+             <number>50</number>
             </property>
             <property name="leftMargin">
              <number>8</number>
@@ -2998,6 +2998,13 @@
               </property>
               <property name="text">
                <string>Export</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="printButton">
+              <property name="text">
+               <string>Print</string>
               </property>
              </widget>
             </item>
