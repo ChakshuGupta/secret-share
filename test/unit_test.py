@@ -33,6 +33,9 @@ class TestShamirSharingMethods(unittest.TestCase):
         # Get 5 of 8 split
         shamir_shares = split_shares(mnemonics, 7, 10)
         self.assertEqual(len(shamir_shares), 10)
+        recovered_mnemonics = combine_shares(shamir_shares[:9])
+        self.assertEqual(recovered_mnemonics, mnemonics)
+        
         self.assertRaises(BadRequest, combine_shares, shamir_shares[:6])
 
 
