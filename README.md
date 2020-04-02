@@ -17,6 +17,7 @@ python3 app.py
     - shamir39 --help
     - shamir39 gen --help
     - shamir39 split --help
+    - shamir39 recover --help
 
 
 ### Run the Application
