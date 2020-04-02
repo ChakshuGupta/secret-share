@@ -22,6 +22,6 @@ sudo python3 setup.py develop
 
 
 ### Run the Application
-- cd secret-share-app
+- cd secret-shares-app
 - python3 secret_share_app.py
 
