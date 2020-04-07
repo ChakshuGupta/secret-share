@@ -23,9 +23,10 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.splitButton.clicked.connect(self.split_key)
         self.exportButton.clicked.connect(self.export_shares)
         self.combineButton.clicked.connect(self.recover_key)
-        self.resetSplitButton.clicked.connect(self.reset_split)
-        self.resetCombineButton.clicked.connect(self.reset_combine)
         self.printButton.clicked.connect(self.print_document)
+        self.actionResetSplit.triggered.connect(self.reset_split)
+        self.actionResetCombine.triggered.connect(self.reset_combine)
+        self.actionResetBoth.triggered.connect(self.reset_both)
 
 
     def generate_mnemonics(self):
@@ -33,7 +34,8 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         Callback function for generate button
         """
         number_of_words = int(self.numberWords.currentText())
-        mnemonics = generate(number_of_words)
+        language = self.languageComboBox.currentText()
+        mnemonics = generate(number_of_words, language=language)
 
         self.sharesTextEdit.clear()
         self.mnemonicsTextEdit.setText(mnemonics)
@@ -47,11 +49,12 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
             m = self.mBox.value()
             n = self.nBox.value()
             mnemonics = self.mnemonicsTextEdit.toPlainText()
+            language = self.languageComboBox.currentText()
             encoding = Encoding.BIP39
             if self.encodingComboBox1.currentIndex() == 1:
                 encoding = Encoding.BASE58
 
-            shares = split_shares(mnemonics, m, n, encoding)
+            shares = split_shares(mnemonics, m, n, encoding, language=language)
             shares_text = "\n\n".join(shares)
 
             self.sharesTextEdit.setText(shares_text)
@@ -102,6 +105,7 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         try:
             input_shares = self.recoverSharesTextEdit.toPlainText().split("\n")
+            language = self.languageComboBox2.currentText()
             encoding = Encoding.BIP39
             if self.encodingComboBox2.currentIndex() == 1:
                 encoding = Encoding.BASE58
@@ -111,13 +115,17 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 share = share.strip()
                 if share != "":
                     shares.append(share)          
-            recovered_key = combine_shares(shares, encoding)
+            recovered_key = combine_shares(shares, encoding, language=language)
             self.recoveredKeyTextEdit.setText(recovered_key)
         
         except BadRequest as e:
             error_dialog = QtWidgets.QErrorMessage(self)
             error_dialog.showMessage("Bad Request! Invalid input!")
         
+        except ValueError:
+            error_dialog = QtWidgets.QErrorMessage(self)
+            error_dialog.showMessage("Bad Request! Incorrect Language Selected!")
+               
         except Exception:
             error_dialog = QtWidgets.QErrorMessage()
             error_dialog.showMessage("Error!")
@@ -125,7 +133,7 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def reset_split(self):
         """
-        Callback function for the reset in split tab
+        Action function for the reset split option
         """
         self.sharesTextEdit.clear()
         self.mnemonicsTextEdit.clear()
@@ -135,12 +143,20 @@ class SecretShareApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def reset_combine(self):
         """
-        Callback function for the reset in combine tab
+        Action function for the reset combine option
         """
         self.recoverSharesTextEdit.clear()
         self.recoveredKeyTextEdit.clear()
         self.encodingComboBox2.setCurrentIndex(0)
 
+    
+    def reset_both(self):
+        """
+        Reset both panes
+        """
+        self.reset_split()
+        self.reset_combine()
+        self.optionTabs.setCurrentIndex(0)
 
     
     def print_document(self):

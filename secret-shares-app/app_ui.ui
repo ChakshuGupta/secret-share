@@ -28,6 +28,24 @@
        </color>
       </brush>
      </colorrole>
+     <colorrole role="Text">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>211</red>
+        <green>215</green>
+        <blue>207</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ButtonText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>211</red>
+        <green>215</green>
+        <blue>207</blue>
+       </color>
+      </brush>
+     </colorrole>
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
@@ -57,6 +75,24 @@
        </color>
       </brush>
      </colorrole>
+     <colorrole role="Text">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>211</red>
+        <green>215</green>
+        <blue>207</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ButtonText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>211</red>
+        <green>215</green>
+        <blue>207</blue>
+       </color>
+      </brush>
+     </colorrole>
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
@@ -78,6 +114,24 @@
     </inactive>
     <disabled>
      <colorrole role="WindowText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>190</red>
+        <green>190</green>
+        <blue>190</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Text">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>190</red>
+        <green>190</green>
+        <blue>190</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ButtonText">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
         <red>190</red>
@@ -842,7 +896,64 @@
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0">
+           <widget class="QLabel" name="generateLabel">
+            <property name="palette">
+             <palette>
+              <active>
+               <colorrole role="WindowText">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>238</red>
+                  <green>238</green>
+                  <blue>236</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </active>
+              <inactive>
+               <colorrole role="WindowText">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>238</red>
+                  <green>238</green>
+                  <blue>236</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </inactive>
+              <disabled>
+               <colorrole role="WindowText">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>190</red>
+                  <green>190</green>
+                  <blue>190</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </disabled>
+             </palette>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Generate/enter a mnemonic:</string>
+            </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
+            <property name="indent">
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0,0,0">
             <property name="spacing">
              <number>40</number>
             </property>
@@ -859,56 +970,35 @@
              <number>10</number>
             </property>
             <item>
-             <widget class="QLabel" name="generateLabel">
-              <property name="palette">
-               <palette>
-                <active>
-                 <colorrole role="WindowText">
-                  <brush brushstyle="SolidPattern">
-                   <color alpha="255">
-                    <red>238</red>
-                    <green>238</green>
-                    <blue>236</blue>
-                   </color>
-                  </brush>
-                 </colorrole>
-                </active>
-                <inactive>
-                 <colorrole role="WindowText">
-                  <brush brushstyle="SolidPattern">
-                   <color alpha="255">
-                    <red>238</red>
-                    <green>238</green>
-                    <blue>236</blue>
-                   </color>
-                  </brush>
-                 </colorrole>
-                </inactive>
-                <disabled>
-                 <colorrole role="WindowText">
-                  <brush brushstyle="SolidPattern">
-                   <color alpha="255">
-                    <red>190</red>
-                    <green>190</green>
-                    <blue>190</blue>
-                   </color>
-                  </brush>
-                 </colorrole>
-                </disabled>
-               </palette>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>11</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
+             <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>Generate a random mnemonic (Select number of words) -</string>
+               <string>Language:</string>
               </property>
-              <property name="indent">
-               <number>30</number>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="languageComboBox">
+              <item>
+               <property name="text">
+                <string>english</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>french</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>italian</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Words:</string>
               </property>
              </widget>
             </item>
@@ -949,6 +1039,19 @@
                </property>
               </item>
              </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
              <widget class="QPushButton" name="generateButton">
@@ -1378,19 +1481,6 @@
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QPushButton" name="resetSplitButton">
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Reset</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </item>
           <item>
@@ -1512,21 +1602,34 @@
            </widget>
           </item>
           <item>
+           <widget class="Line" name="line">
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>2</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <property name="spacing">
-             <number>40</number>
+             <number>20</number>
             </property>
             <property name="leftMargin">
-             <number>8</number>
+             <number>0</number>
             </property>
             <property name="topMargin">
-             <number>10</number>
+             <number>0</number>
             </property>
             <property name="rightMargin">
              <number>20</number>
             </property>
             <property name="bottomMargin">
-             <number>10</number>
+             <number>5</number>
             </property>
             <item>
              <widget class="QLabel" name="splitParamLabel">
@@ -1575,7 +1678,7 @@
               </property>
               <property name="font">
                <font>
-                <pointsize>11</pointsize>
+                <pointsize>12</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
@@ -1583,8 +1686,11 @@
               <property name="text">
                <string>Split Parameters :</string>
               </property>
+              <property name="margin">
+               <number>10</number>
+              </property>
               <property name="indent">
-               <number>30</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -3207,7 +3313,7 @@
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0,0,0,0">
+           <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0,0,0,0,0">
             <property name="spacing">
              <number>50</number>
             </property>
@@ -3226,7 +3332,7 @@
                </size>
               </property>
               <property name="text">
-               <string>Encoding:-</string>
+               <string>Encoding:</string>
               </property>
              </widget>
             </item>
@@ -3252,6 +3358,32 @@
               <item>
                <property name="text">
                 <string>BASE58</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Language:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="languageComboBox2">
+              <item>
+               <property name="text">
+                <string>english</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>french</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>italian</string>
                </property>
               </item>
              </widget>
@@ -3697,19 +3829,6 @@
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QPushButton" name="resetCombineButton">
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Reset</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </item>
           <item>
@@ -3828,6 +3947,19 @@
             </property>
             <property name="textInteractionFlags">
              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextEditable|Qt::TextEditorInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_2">
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>2</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -3969,7 +4101,31 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuReset">
+    <property name="title">
+     <string>Reset</string>
+    </property>
+    <addaction name="actionResetSplit"/>
+    <addaction name="actionResetCombine"/>
+    <addaction name="actionResetBoth"/>
+   </widget>
+   <addaction name="menuReset"/>
   </widget>
+  <action name="actionResetSplit">
+   <property name="text">
+    <string>Reset Split</string>
+   </property>
+  </action>
+  <action name="actionResetCombine">
+   <property name="text">
+    <string>Reset Combine</string>
+   </property>
+  </action>
+  <action name="actionResetBoth">
+   <property name="text">
+    <string>Reset Both</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
