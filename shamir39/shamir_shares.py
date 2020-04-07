@@ -192,7 +192,6 @@ def mnemonics_to_bin(mnemonic_words, language):
     @return binary string
     """
     bin_str = ""
-
     for word in mnemonic_words:
         word_index = WORDLIST[language].index(word)
         if word_index < 0:
@@ -243,6 +242,9 @@ def params_to_bin_str(m, index):
 
 
 def get_bip39_shares(hex_str, m, n, language):
+    """
+
+    """
     shamir_shares = SecretSharer.split_secret(hex_str, m, n)
 
     shamir39_shares  = list()
@@ -266,6 +268,9 @@ def get_bip39_shares(hex_str, m, n, language):
 
 
 def get_base58_shares(hex_str, m, n):
+    """
+    Convert the hex string to a base58 string and split it into "n" shares.
+    """
     base58_str = change_charset(hex_str, string.hexdigits[0:16], base58_chars)
     shares = BitcoinToB58SecretSharer.split_secret(base58_str, m, n)
 
