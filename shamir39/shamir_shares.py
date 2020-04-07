@@ -7,7 +7,7 @@ import struct
 from flask import abort
 from mnemonic import Mnemonic
 from utilitybelt import base58_chars, change_charset
-from wordlist.wordlist_english import ENGLISH_WORDLIST
+from wordlist import WORDLIST
 from pyseltongue import SecretSharer, BitcoinToB58SecretSharer
 
 VERSION = "shamir-share-v1"
@@ -26,7 +26,7 @@ class Encoding(enum.Enum):
 
 
 
-def generate(number_of_words):
+def generate(number_of_words, language="english"):
     """
     Generate a new set of mnemonic words, given the number of words
 
@@ -34,13 +34,13 @@ def generate(number_of_words):
 
     @return : Set of mnemonic words
     """
-    new_mnemonic = Mnemonic("english")
+    new_mnemonic = Mnemonic(language)
     strength = STRENGTH_WORDS_MAP[number_of_words]
 
     return(new_mnemonic.generate(strength))
 
 
-def split_shares(mnemonics, m, n, encoding=Encoding.BIP39):
+def split_shares(mnemonics, m, n, encoding=Encoding.BIP39, language="english"):
     """
     Split BIP39 mnemonics into Shamir Shares
 
@@ -65,7 +65,7 @@ def split_shares(mnemonics, m, n, encoding=Encoding.BIP39):
     if len(mnemonic_words) == 0 :
         abort(400, {'message': "BIP39 Mnemonic words not provided!"})
 
-    bin_str = mnemonics_to_bin(mnemonic_words)
+    bin_str = mnemonics_to_bin(mnemonic_words, language)
     
     hex_str = hex(int(bin_str, 2))
     hex_str = hex_str.split("x")[1] # Hex string generated starts with - 0x
@@ -73,14 +73,14 @@ def split_shares(mnemonics, m, n, encoding=Encoding.BIP39):
     shares = list()
 
     if encoding == Encoding.BIP39:
-        shares = get_bip39_shares(hex_str, m, n)
+        shares = get_bip39_shares(hex_str, m, n, language)
     else:
         shares = get_base58_shares(hex_str, m, n)
 
     return shares
 
     
-def combine_shares(shamir_shares, encoding=Encoding.BIP39):
+def combine_shares(shamir_shares, encoding=Encoding.BIP39, language="english"):
     """
     Combine the shamir39 shares to get BIP39 mnemonics
     
@@ -107,7 +107,7 @@ def combine_shares(shamir_shares, encoding=Encoding.BIP39):
             index_bin_str = ""
             param_end_index = 1
             for word in words[1:]:
-                word_index = ENGLISH_WORDLIST.index(word)
+                word_index = WORDLIST[language].index(word)
 
                 if word_index < 0 :
                     error_message = "Invalid word found in the mnemonics: " + word
@@ -140,7 +140,7 @@ def combine_shares(shamir_shares, encoding=Encoding.BIP39):
             if m != num_required_shares:
                 abort(400, {'message': 'Inconsistent M parameter in the shares!'})
 
-            bin_share = mnemonics_to_bin(words[param_end_index:])
+            bin_share = mnemonics_to_bin(words[param_end_index:], language)
             hex_share =  hex(int(bin_share, 2))
             hex_share = hex_share.split("x")[1]
             hex_share = str(index) + "-" + hex_share
@@ -154,13 +154,13 @@ def combine_shares(shamir_shares, encoding=Encoding.BIP39):
         recovered_key_hex = change_charset(recovered_key_base58, base58_chars, string.hexdigits[0:16])
 
     recovered_key_bin = bin(int(recovered_key_hex, 16)).split("b")[1]
-    recovered_key = bin_to_mnemonics(recovered_key_bin)
+    recovered_key = bin_to_mnemonics(recovered_key_bin, language)
     recovered_key = " ".join(recovered_key)
     
     return recovered_key
 
 
-def bin_to_mnemonics(bin_str):
+def bin_to_mnemonics(bin_str, language):
     """
     Convert binary string to mnemonics
     
@@ -177,13 +177,13 @@ def bin_to_mnemonics(bin_str):
     for i in range(0, total_words):
         sub_bin_str = bin_str[i*11 : (i+1)*11]
         word_index = int(sub_bin_str, 2)
-        word = ENGLISH_WORDLIST[word_index]
+        word = WORDLIST[language][word_index]
         mnemonic.append(word)
 
     return mnemonic
 
 
-def mnemonics_to_bin(mnemonic_words):
+def mnemonics_to_bin(mnemonic_words, language):
     """
     Convert mnemonics to binary string
 
@@ -194,7 +194,7 @@ def mnemonics_to_bin(mnemonic_words):
     bin_str = ""
 
     for word in mnemonic_words:
-        word_index = ENGLISH_WORDLIST.index(word)
+        word_index = WORDLIST[language].index(word)
         if word_index < 0:
             error_message = "Invalid word found in the mnemonics: " + word
             abort(400, {'message': error_message})
@@ -242,7 +242,7 @@ def params_to_bin_str(m, index):
     return bin_str
 
 
-def get_bip39_shares(hex_str, m, n):
+def get_bip39_shares(hex_str, m, n, language):
     shamir_shares = SecretSharer.split_secret(hex_str, m, n)
 
     shamir39_shares  = list()
@@ -255,8 +255,8 @@ def get_bip39_shares(hex_str, m, n):
         share_binary = share_binary.split("b")[1] # Binary string generated starts with - 0b
         # Every mnemonic has version as the first word.
         mnemonic_words.append(VERSION)
-        mnemonic_words.extend(bin_to_mnemonics(params_binary))
-        mnemonic_words.extend(bin_to_mnemonics(share_binary))
+        mnemonic_words.extend(bin_to_mnemonics(params_binary, language))
+        mnemonic_words.extend(bin_to_mnemonics(share_binary, language))
 
         mnemonic_string = " ".join(mnemonic_words)
         shamir39_shares.append(mnemonic_string)

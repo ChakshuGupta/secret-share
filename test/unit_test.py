@@ -2,7 +2,7 @@ import unittest
 import random
 import shamir39
 from shamir39.shamir_shares import generate, split_shares, combine_shares, Encoding
-from wordlist.wordlist_english import ENGLISH_WORDLIST
+from wordlist import WORDLIST
 from werkzeug.exceptions import BadRequest
 
 
@@ -14,7 +14,7 @@ class TestShamirSharingMethods(unittest.TestCase):
         mnemonics_length = len(mnemonics)
         self.assertEqual(mnemonics_length, 24)
         for word in mnemonics:
-                self.assertTrue(word in ENGLISH_WORDLIST)
+                self.assertTrue(word in WORDLIST["english"])
     
 
     def test_split_shares(self):
