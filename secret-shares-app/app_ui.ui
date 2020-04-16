@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>995</width>
-    <height>803</height>
+    <height>846</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -991,6 +991,11 @@
               <item>
                <property name="text">
                 <string>italian</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>spanish</string>
                </property>
               </item>
              </widget>
@@ -3386,6 +3391,11 @@
                 <string>italian</string>
                </property>
               </item>
+              <item>
+               <property name="text">
+                <string>spanish</string>
+               </property>
+              </item>
              </widget>
             </item>
             <item>
@@ -4113,17 +4123,17 @@
   </widget>
   <action name="actionResetSplit">
    <property name="text">
-    <string>Reset Split</string>
+    <string>&amp;Reset Split</string>
    </property>
   </action>
   <action name="actionResetCombine">
    <property name="text">
-    <string>Reset Combine</string>
+    <string>Reset &amp;Combine</string>
    </property>
   </action>
   <action name="actionResetBoth">
    <property name="text">
-    <string>Reset Both</string>
+    <string>Reset &amp;Both</string>
    </property>
   </action>
  </widget>
