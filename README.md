@@ -1,5 +1,10 @@
 # Shamir Secret Sharing Scheme
 
+## Run using Docker -
+1. docker build -t shamir-app .
+2. docker run  -it --env="DISPLAY" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" shamir-app
+
+
 ### Install and Setup Steps-
 
 1. Install python3
@@ -23,4 +28,3 @@ python3 app.py
 ### Run the Application
 - cd secret-shares-app
 - python3 secret_share_app.py
-
