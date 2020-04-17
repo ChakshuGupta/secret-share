@@ -7,6 +7,8 @@ from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
 
+EN_LANG = "english"
+
 
 @app.route('/generate_mnemonics', methods=['POST'])
 def generate_mnemonics():
@@ -17,8 +19,13 @@ def generate_mnemonics():
         number_of_words = 12
     
     number_of_words = request.json["number_of_words"]
+
+    try:
+        language = request.json["lang"]
+    except:
+        language = EN_LANG
   
-    new_mnemonic = generate(number_of_words)
+    new_mnemonic = generate(number_of_words, language)
     return jsonify(mnemonic=new_mnemonic)
 
 
@@ -35,10 +42,15 @@ def generate_shares():
     n = request.json["n"]
     encoding_str = request.json["encoding"]
 
+    try:
+        language = request.json["lang"]
+    except:
+        language = EN_LANG
+
     encoding = Encoding.BIP39
     if encoding_str == "BASE58":
         encoding = Encoding.BASE58
-    shamir_shares = split_shares(mnemonics, m, n, encoding)
+    shamir_shares = split_shares(mnemonics, m, n, encoding, language)
 
     print(mnemonics, m, n)
     return jsonify(shares=shamir_shares)
@@ -55,11 +67,16 @@ def recover_secret():
     shamir_shares = request.json["shares"]
     encoding_str = request.json["encoding"]
 
+    try:
+        language = request.json["lang"]
+    except:
+        language = EN_LANG
+
     encoding = Encoding.BIP39
     if encoding_str == "BASE58":
         encoding = Encoding.BASE58
 
-    recovered_key = combine_shares(shamir_shares, encoding)
+    recovered_key = combine_shares(shamir_shares, encoding, language)
     return jsonify(recovered_key=recovered_key)
 
 
