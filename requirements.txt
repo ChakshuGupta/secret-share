@@ -3,4 +3,4 @@ mnemonic==0.19
 Click==7.0
 Flask==2.2.5
 utilitybelt==0.2.6
-Werkzeug==3.0.3
+Werkzeug==3.0.6
